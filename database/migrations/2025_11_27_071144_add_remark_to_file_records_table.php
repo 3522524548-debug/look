@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * 数据库迁移：为 file_records 表添加 remark（备注）字段
+ *
+ * 在档案记录表中增加一个可选的备注字段，最长 500 字符。
+ * 用于记录档案的额外说明信息。
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

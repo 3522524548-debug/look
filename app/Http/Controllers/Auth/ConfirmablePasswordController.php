@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * 认证控制器：确认密码
+ *
+ * 用于敏感操作前的再次验证密码。
+ */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;

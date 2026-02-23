@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * 数据库迁移：创建 adoption_applications 表（早期版本）
+ *
+ * 与 2025_12_21_124741 版本结构相同，通过 hasTable 检查避免重复创建。
+ * 仅在表不存在时才会执行创建。
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * 数据库迁移：为 users 表添加 phone、role、status 字段
+ *
+ * 扩展用户表，增加：
+ * - phone   手机号（可选）
+ * - role    角色：user 普通用户 / keeper 饲养员 / admin 管理员
+ * - status  账号状态：pending 待审 / active 启用 / disabled 禁用
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

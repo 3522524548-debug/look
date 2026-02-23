@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * 数据库迁移：创建 file_records（档案记录）表
+ *
+ * 存储动物相关的 PDF 档案文件记录，如检疫证明、疫苗本、体检报告等。
+ * 每条记录关联一只动物，包含文件路径、类型、审核状态等信息。
+ * 注：未使用外键约束，避免 SQLite 兼容性问题。
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

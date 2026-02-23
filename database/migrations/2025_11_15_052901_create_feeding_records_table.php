@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * 数据库迁移：创建 feeding_records（喂养记录）表
+ *
+ * 记录每只动物的日常喂养情况，包括喂食状态、清洁情况、备注等。
+ * 每条记录关联一只动物和一个录入用户（饲养员）。
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

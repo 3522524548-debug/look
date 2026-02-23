@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * 数据库迁移：为 users 表添加 role_status 字段
+ *
+ * 增加数字型角色状态字段：0 = 普通用户，1 = 管理员。
+ * 与 is_admin 字段配合使用，User::isAdmin() 会同时检查两个字段。
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

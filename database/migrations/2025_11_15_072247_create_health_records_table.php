@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * 数据库迁移：创建 health_records（健康记录）表
+ *
+ * 记录每只动物的健康状态，包括健康/异常两种状态和备注说明。
+ * 每条记录关联一只动物和一个录入用户（饲养员）。
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

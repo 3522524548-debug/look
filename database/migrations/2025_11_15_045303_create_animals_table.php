@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * 数据库迁移：创建 animals（动物信息）表
+ *
+ * 动物表是系统核心表之一，存储救助动物的基本信息、审核状态和可见性控制。
+ * 表字段包括：名称、种类、年龄、习性、可见性、审核状态、创建者、审核人等。
+ * 支持软删除（softDeletes）。
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

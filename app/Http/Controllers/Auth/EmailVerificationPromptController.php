@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * 认证控制器：邮箱验证提示页
+ *
+ * 若已验证则重定向，否则展示 VerifyEmail 页面。
+ */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;

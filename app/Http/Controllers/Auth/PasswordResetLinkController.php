@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * 认证控制器：找回密码
+ *
+ * 展示忘记密码页并发送重置链接邮件。
+ */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;

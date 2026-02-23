@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * 认证控制器：邮箱验证回调
+ *
+ * 用户点击邮件中的验证链接后触发，标记邮箱为已验证。
+ */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;

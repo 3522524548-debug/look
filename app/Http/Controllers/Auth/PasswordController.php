@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * 认证控制器：修改密码
+ *
+ * 已登录用户在个人资料中修改密码。
+ */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;

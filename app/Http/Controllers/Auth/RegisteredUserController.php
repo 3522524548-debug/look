@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * 认证控制器：注册
+ *
+ * 展示注册页并处理用户注册流程。
+ */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;

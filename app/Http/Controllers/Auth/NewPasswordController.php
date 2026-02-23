@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * 认证控制器：重置密码
+ *
+ * 根据重置令牌展示重置页并保存新密码。
+ */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * 认证控制器：登录与退出
+ *
+ * 负责展示登录页、处理登录请求与退出登录。
+ */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
