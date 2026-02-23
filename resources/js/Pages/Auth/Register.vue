@@ -1,7 +1,18 @@
+<!--
+  Auth/Register.vue - 用户注册页面
+  
+  功能说明：
+  - 提供姓名、邮箱、密码、确认密码表单
+  - 表单验证错误实时显示
+  - 注册成功后自动登录并跳转到控制面板
+  
+  路由: GET /register
+-->
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import InputError from '@/Components/InputError.vue';    // 表单错误提示组件
+import { Head, Link, useForm } from '@inertiajs/vue3';   // Inertia 组件
 
+/** 创建注册表单 */
 const form = useForm({
     name: '',
     email: '',

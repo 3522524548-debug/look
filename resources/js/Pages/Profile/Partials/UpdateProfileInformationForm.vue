@@ -1,3 +1,7 @@
+<!--
+    组件：更新个人资料表单
+    修改用户名与邮箱，包含邮箱验证提示。
+-->
 <script setup>
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';

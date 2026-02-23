@@ -1,3 +1,7 @@
+<!--
+    组件：表单错误提示
+    当 message 有值时展示红色提示文本。
+-->
 <script setup>
 defineProps({
     message: {

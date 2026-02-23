@@ -1,18 +1,37 @@
+<!--
+  Admin/AdoptionApplications/Index.vue - 管理员领养申请审核页
+  
+  功能说明：
+  - 显示所有领养申请的列表（分页）
+  - 展示申请人、动物、状态、申请理由、联系信息
+  - 提供审核操作：通过/驳回/确认交接
+  - 状态徽章显示不同颜色
+  
+  后端数据: applications(分页)
+  路由: GET /admin/adoptions
+-->
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'; // 已登录用户布局
+import { Head, useForm, Link } from '@inertiajs/vue3';               // Inertia 组件
 
+/** 接收后端传递的分页数据 */
 const props = defineProps({
-    applications: Object, // 接收后端传来的分页数据
+    applications: Object, // 领养申请分页数据（包含 data, links, meta 等）
 });
 
+/** 使用 Inertia useForm 创建审核操作表单 */
 const form = useForm({
-    status: '',
+    status: '',           // 审核状态（approved/rejected/completed）
 });
 
 // 处理审核动作
 const handleReview = (id, action) => {
-    const statusText = action === 'approved' ? '通过' : '驳回';
+    const statusTextMap = {
+        'approved': '通过',
+        'rejected': '驳回',
+        'completed': '确认交接（标记已出库）',
+    };
+    const statusText = statusTextMap[action] || action;
     if (confirm(`确定要${statusText}这条领养申请吗？`)) {
         form.status = action;
         form.patch(route('admin.adoptions.update', id), {
@@ -71,8 +90,11 @@ const handleReview = (id, action) => {
                                     <span v-if="app.status === 'pending'" class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 rounded-lg text-xs font-medium border border-amber-100">
                                         <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span> 待审核
                                     </span>
-                                    <span v-else-if="app.status === 'approved'" class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-50 text-green-700 rounded-lg text-xs font-medium border border-green-100">
-                                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> 已通过
+                                    <span v-else-if="app.status === 'approved'" class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-medium border border-blue-100">
+                                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span> 待交接
+                                    </span>
+                                    <span v-else-if="app.status === 'completed'" class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-50 text-green-700 rounded-lg text-xs font-medium border border-green-100">
+                                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> 已完成
                                     </span>
                                     <span v-else class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-50 text-red-700 rounded-lg text-xs font-medium border border-red-100">
                                         <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> 已驳回
@@ -87,6 +109,12 @@ const handleReview = (id, action) => {
                                             ✕ 驳回
                                         </button>
                                     </div>
+                                    <div v-else-if="app.status === 'approved'">
+                                        <button @click="handleReview(app.id, 'completed')" class="px-3.5 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-medium hover:bg-indigo-100 transition">
+                                            📦 确认交接
+                                        </button>
+                                    </div>
+                                    <span v-else-if="app.status === 'completed'" class="text-xs text-green-600 font-medium">✅ 已出库</span>
                                     <span v-else class="text-xs text-gray-400 font-medium">已处理</span>
                                 </td>
                             </tr>
@@ -114,7 +142,7 @@ const handleReview = (id, action) => {
                             'text-gray-600 hover:bg-gray-100 bg-white border border-gray-100': !link.active && link.url 
                         }"
                     >
-                        <span v-html="link.label"></span>
+                        <span v-html="link.label.replace('Previous', '上一页').replace('Next', '下一页')"></span>
                     </Link>
                 </div>
             </div>

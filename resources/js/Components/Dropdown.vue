@@ -1,3 +1,7 @@
+<!--
+    组件：下拉菜单容器
+    支持对齐方式、宽度与自定义内容样式，包含遮罩与过渡动画。
+-->
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 

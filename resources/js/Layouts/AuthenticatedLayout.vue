@@ -1,24 +1,51 @@
+<!--
+  AuthenticatedLayout.vue - 已登录用户通用布局
+  
+  功能说明：
+  - 所有需要登录的页面的统一布局包裹器
+  - 顶部导航栏：控制面板、动物管理、领养列表、管理员菜单
+  - 用户下拉菜单：个人资料、登出
+  - 移动端响应式导航菜单
+  - Toast 通知系统：显示成功/错误提示（自动消失）
+  - 通过 <slot /> 插槽渲染子页面内容
+-->
 <script setup>
-import { ref, watch, computed } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { ref, watch, computed } from 'vue';                          // Vue 响应式 API
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';       // 应用 Logo 组件
+import Dropdown from '@/Components/Dropdown.vue';                     // 下拉菜单组件
+import DropdownLink from '@/Components/DropdownLink.vue';             // 下拉菜单链接组件
+import NavLink from '@/Components/NavLink.vue';                       // 导航链接组件
+import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';   // 移动端导航链接
+import { Link, usePage } from '@inertiajs/vue3';                      // Inertia 组件
 
+/** 控制移动端导航菜单的显示/隐藏 */
 const showingNavigationDropdown = ref(false);
+
+/** 获取当前页面共享数据（包含 auth.user, flash 等） */
 const page = usePage();
 
-// ⭐ 修复后的消息监听逻辑：增加安全判断，防止页面崩溃
+/** Toast 通知系统（替代 alert 弹窗，提供更好的用户体验） */
+const toast = ref({ show: false, message: '', type: 'success' });
+
 const flashSuccess = computed(() => page.props.flash?.success);
+const flashError = computed(() => page.props.flash?.error);
 
 watch(flashSuccess, (message) => {
     if (message) {
-        alert(message); // 弹出“申请成功”等提示
-        // 弹出后将消息清空，防止重复弹出
+        toast.value = { show: true, message, type: 'success' };
+        setTimeout(() => { toast.value.show = false; }, 4000);
         if (page.props.flash) {
             page.props.flash.success = null;
+        }
+    }
+}, { immediate: true });
+
+watch(flashError, (message) => {
+    if (message) {
+        toast.value = { show: true, message, type: 'error' };
+        setTimeout(() => { toast.value.show = false; }, 5000);
+        if (page.props.flash) {
+            page.props.flash.error = null;
         }
     }
 }, { immediate: true });
@@ -168,6 +195,33 @@ const goBack = () => {
                     </button>
                 </div>
             </header>
+
+            <!-- Toast 通知 -->
+            <Teleport to="body">
+                <Transition
+                    enter-active-class="transition ease-out duration-300"
+                    enter-from-class="opacity-0 -translate-y-3"
+                    enter-to-class="opacity-100 translate-y-0"
+                    leave-active-class="transition ease-in duration-200"
+                    leave-from-class="opacity-100 translate-y-0"
+                    leave-to-class="opacity-0 -translate-y-3"
+                >
+                    <div v-if="toast.show" class="fixed top-4 left-1/2 -translate-x-1/2 z-[9999]">
+                        <div :class="[
+                            'flex items-center gap-3 px-6 py-3.5 rounded-2xl shadow-xl text-sm font-medium backdrop-blur-sm border',
+                            toast.type === 'success' 
+                                ? 'bg-green-50/95 text-green-700 border-green-200 shadow-green-100/50' 
+                                : 'bg-red-50/95 text-red-700 border-red-200 shadow-red-100/50'
+                        ]">
+                            <span class="text-lg">{{ toast.type === 'success' ? '✅' : '❌' }}</span>
+                            <span>{{ toast.message }}</span>
+                            <button @click="toast.show = false" class="ml-2 opacity-50 hover:opacity-100 transition">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </Transition>
+            </Teleport>
 
             <main>
                 <slot />

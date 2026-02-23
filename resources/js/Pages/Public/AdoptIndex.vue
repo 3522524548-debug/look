@@ -1,11 +1,26 @@
+<!--
+  Public/AdoptIndex.vue - 公众领养列表页
+  
+  功能说明：
+  - 无需登录即可访问的公开页面
+  - 展示所有已审核通过且公开可见的动物
+  - 支持搜索和物种筛选
+  - 卡片式布局，显示动物照片、名称、物种、年龄、描述
+  - 点击可进入详情页或直接申请领养
+  - 分页展示（每页12条）
+  
+  后端数据: animals(分页), filters, speciesList
+  路由: GET /adopt
+-->
 <script setup>
-import { Head, Link, usePage, router } from '@inertiajs/vue3';
-import { ref, watch, computed } from 'vue';
+import { Head, Link, usePage, router } from '@inertiajs/vue3'; // Inertia 组件
+import { ref, watch, computed } from 'vue';                     // Vue 响应式 API
 
+/** 接收后端传递的页面属性 */
 const props = defineProps({
-    animals: Object,
-    filters: Object,
-    speciesList: Array,
+    animals: Object,      // 动物分页数据
+    filters: Object,      // 当前筛选条件
+    speciesList: Array,   // 可选物种列表
 });
 
 const adoptableAnimals = computed(() => props.animals?.data || []);
@@ -93,7 +108,7 @@ watch([search, speciesFilter], doSearch);
                         <input v-model="search" type="text" placeholder="搜索动物名称、品种..." 
                             class="w-full pl-11 border-gray-200 rounded-xl shadow-sm text-sm px-5 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 focus:bg-white transition py-3" />
                     </div>
-                    <select v-model="speciesFilter" class="border-gray-200 rounded-xl shadow-sm text-sm px-4 py-3 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition">
+                    <select v-model="speciesFilter" class="border-gray-200 rounded-xl shadow-sm text-sm pl-4 pr-9 py-3 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition min-w-[120px] appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%236b7280%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat">
                         <option value="">全部物种</option>
                         <option v-for="s in speciesList" :key="s" :value="s">{{ s }}</option>
                     </select>
@@ -162,7 +177,7 @@ watch([search, speciesFilter], doSearch);
                         class="px-3 py-1.5 rounded-lg text-sm transition-all duration-200"
                         :class="{ 'bg-indigo-600 text-white shadow-sm': link.active, 'text-gray-400 cursor-not-allowed': !link.active && !link.url, 'text-gray-600 hover:bg-gray-100 bg-white border border-gray-100': !link.active && link.url }"
                      >
-                        <span v-html="link.label"></span>
+                        <span v-html="link.label.replace('Previous', '上一页').replace('Next', '下一页')"></span>
                      </Link>
                  </div>
 

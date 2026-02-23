@@ -1,3 +1,7 @@
+<!--
+    组件：顶部导航链接
+    根据 active 状态切换样式，用于桌面导航栏。
+-->
 <script setup>
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';

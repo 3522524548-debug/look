@@ -1,3 +1,7 @@
+<!--
+    组件：复选框
+    通过 update:checked 事件实现 v-model 绑定，支持布尔或数组值。
+-->
 <script setup>
 import { computed } from 'vue';
 

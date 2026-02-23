@@ -1,3 +1,7 @@
+<!--
+    页面：忘记密码
+    用户输入邮箱后发送重置密码链接。
+-->
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';

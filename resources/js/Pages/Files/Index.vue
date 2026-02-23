@@ -1,6 +1,14 @@
+<!--
+  Files/Index.vue - 文件列表页
+  
+  功能说明：
+  - 显示动物文件档案列表
+  - 支持搜索和审核状态筛选
+  - 允许管理员审核和删除文件
+-->
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'; // 已登录用户布局
+import { Head, Link, router } from '@inertiajs/vue3';                // Inertia 组件
 
 // 接收后端传来的数据
 const props = defineProps({

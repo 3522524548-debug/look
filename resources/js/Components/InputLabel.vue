@@ -1,3 +1,7 @@
+<!--
+    组件：表单标签
+    支持传入 value 或插槽内容显示文本。
+-->
 <script setup>
 defineProps({
     value: {

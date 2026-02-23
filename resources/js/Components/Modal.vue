@@ -1,3 +1,7 @@
+<!--
+    组件：模态框
+    基于 dialog 实现，支持遮罩、关闭逻辑与过渡动画。
+-->
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 

@@ -1,3 +1,7 @@
+<!--
+    组件：响应式导航链接
+    适用于移动端菜单，active 状态样式与桌面版区分。
+-->
 <script setup>
 import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';

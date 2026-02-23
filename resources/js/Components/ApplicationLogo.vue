@@ -1,3 +1,7 @@
+<!--
+    组件：站点 Logo（SVG 爪印图标）
+    用于登录页、顶部导航等位置的品牌标识展示。
+-->
 <template>
     <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" class="text-indigo-600">
         <!-- 爪印图标 - 流浪动物救助站 -->

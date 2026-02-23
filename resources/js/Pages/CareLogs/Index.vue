@@ -1,4 +1,12 @@
+<!--
+  CareLogs/Index.vue - 护理记录页（简版/占位页）
+  
+  功能说明：
+  - 护理记录的简版页面，主要功能在 Animals/CareLogs.vue 中实现
+  - 接收 logs 和 animals 数据
+-->
 <script setup>
+/** 接收后端传递的护理记录和动物列表 */
 defineProps({ logs: Object, animals: Array })
 </script>
 

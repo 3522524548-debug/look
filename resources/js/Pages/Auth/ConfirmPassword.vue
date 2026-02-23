@@ -1,3 +1,7 @@
+<!--
+    页面：确认密码
+    进入敏感操作前要求再次输入密码。
+-->
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';

@@ -1,12 +1,27 @@
+<!--
+  Animals/Index.vue - 动物管理列表页（后台）
+  
+  功能说明：
+  - 显示动物列表表格，支持搜索、状态筛选、物种筛选
+  - 支持新增/编辑/删除动物（弹窗表单）
+  - 支持上传动物照片
+  - 提供服务快捷链接（文件档案、护理记录、动物详情）
+  - 管理员可导出 Excel
+  - 分页展示（每页10条）
+  
+  后端数据: animals(分页), filters, speciesList
+  路由: GET /animals
+-->
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, useForm, router } from '@inertiajs/vue3';
-import { ref, watch, computed } from 'vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'; // 已登录用户布局
+import { Head, Link, useForm, router } from '@inertiajs/vue3';      // Inertia 组件
+import { ref, watch, computed } from 'vue';                          // Vue 响应式 API
 
+/** 接收后端传递的页面属性 */
 const props = defineProps({
-    animals: Object,
-    filters: Object,
-    speciesList: Array,
+    animals: Object,      // 动物分页数据（包含 data, links, meta 等）
+    filters: Object,      // 当前筛选条件（用于回填表单）
+    speciesList: Array,   // 可选物种列表（下拉框选项）
 })
 
 // 分页数据（computed 确保筛选后自动更新）
@@ -162,13 +177,14 @@ const submitForm = () => {
                         <input v-model="search" type="text" placeholder="搜索名称、物种、描述..." 
                             class="w-full pl-10 border-gray-200 rounded-xl shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 focus:bg-white transition" />
                     </div>
-                    <select v-model="statusFilter" class="border-gray-200 rounded-xl shadow-sm text-sm focus:ring-indigo-500 bg-gray-50 focus:bg-white transition px-4 py-2.5">
+                    <select v-model="statusFilter" class="border-gray-200 rounded-xl shadow-sm text-sm focus:ring-indigo-500 bg-gray-50 focus:bg-white transition pl-4 pr-9 py-2.5 min-w-[120px] appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%236b7280%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat">
                         <option value="">全部状态</option>
                         <option value="pending">⏳ 待审核</option>
                         <option value="approved">✅ 已通过</option>
                         <option value="rejected">❌ 已驳回</option>
+                        <option value="adopted">🏠 已领养</option>
                     </select>
-                    <select v-model="speciesFilter" class="border-gray-200 rounded-xl shadow-sm text-sm focus:ring-indigo-500 bg-gray-50 focus:bg-white transition px-4 py-2.5">
+                    <select v-model="speciesFilter" class="border-gray-200 rounded-xl shadow-sm text-sm focus:ring-indigo-500 bg-gray-50 focus:bg-white transition pl-4 pr-9 py-2.5 min-w-[120px] appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%236b7280%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat">
                         <option value="">全部物种</option>
                         <option v-for="s in speciesList" :key="s" :value="s">{{ s }}</option>
                     </select>
@@ -214,6 +230,9 @@ const submitForm = () => {
                                     <span v-else-if="animal.review_status === 'rejected'" class="inline-flex items-center gap-1 px-2 py-1 bg-red-50 text-red-700 rounded-lg text-xs font-medium">
                                         <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span> 驳回
                                     </span>
+                                    <span v-else-if="animal.review_status === 'adopted'" class="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-medium">
+                                        <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span> 已领养
+                                    </span>
                                     <span v-else class="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-yellow-700 rounded-lg text-xs font-medium">
                                         <span class="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-pulse"></span> 待审
                                     </span>
@@ -245,7 +264,7 @@ const submitForm = () => {
                         <Link v-for="(link, k) in props.animals.links" :key="k" :href="link.url ?? '#'" 
                             class="px-3 py-1.5 rounded-lg text-sm transition-all duration-200"
                             :class="{ 'bg-indigo-600 text-white shadow-sm': link.active, 'text-gray-400 cursor-not-allowed': !link.url, 'text-gray-600 hover:bg-gray-100': link.url && !link.active }"
-                            v-html="link.label.replace('Previous', '‹').replace('Next', '›')" />
+                            v-html="link.label.replace('Previous', '上一页').replace('Next', '下一页')" />
                     </div>
                 </div>
             </div>
@@ -281,6 +300,7 @@ const submitForm = () => {
                                 <option value="pending">待审核</option>
                                 <option value="approved">已通过</option>
                                 <option value="rejected">已驳回</option>
+                                <option value="adopted">已领养</option>
                             </select>
                         </div>
                     </div>

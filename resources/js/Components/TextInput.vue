@@ -1,3 +1,7 @@
+<!--
+    组件：文本输入框
+    支持 v-model 绑定与 autofocus 自动聚焦，并暴露 focus() 方法。
+-->
 <script setup>
 import { onMounted, ref } from 'vue';
 

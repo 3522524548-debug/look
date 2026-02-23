@@ -1,8 +1,19 @@
+<!--
+  Profile/Edit.vue - 个人资料编辑页
+  
+  功能说明：
+  - 包含三个子表单组件：
+    1. UpdateProfileInformationForm - 更新姓名/邮箱
+    2. UpdatePasswordForm - 修改密码
+    3. DeleteUserForm - 删除账户
+  
+  路由: GET /profile
+-->
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';               // 已登录用户布局
+import DeleteUserForm from './Partials/DeleteUserForm.vue';                         // 删除账户表单
+import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';                 // 修改密码表单
+import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue'; // 更新个人信息表单
 import { Head } from '@inertiajs/vue3';
 
 defineProps({

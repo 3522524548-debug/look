@@ -1,13 +1,27 @@
+<!--
+  Adoptions/ApplyForm.vue - 领养申请表单页
+  
+  功能说明：
+  - 用户填写领养申请信息：领养理由、联系电话、联系地址
+  - 显示申请领养的动物信息卡片
+  - 表单规则：领养理由至少10字，电话和地址必填
+  - 提交后跳转到“我的申请”页面
+  
+  后端数据: animal
+  路由: GET /animals/{animal}/adopt/apply
+-->
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'; // 已登录用户布局
+import { Head, useForm, Link } from '@inertiajs/vue3';               // Inertia 组件
 
+/** 接收后端传递的动物信息 */
 const props = defineProps({
-    animal: Object,
+    animal: Object,       // 申请领养的动物详细信息
 });
 
+/** 使用 Inertia useForm 创建响应式表单 */
 const form = useForm({
-    apply_reason: '',
+    apply_reason: '',     // 领养理由
     contact_phone: '',
     address: '',
 });

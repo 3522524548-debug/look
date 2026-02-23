@@ -1,13 +1,26 @@
+<!--
+  Dashboard.vue - 控制面板/仪表盘
+  
+  功能说明：
+  - 显示系统概览统计卡片（动物总数、文件数、今日上传、待审核等）
+  - 使用 Chart.js 绘制三个图表：月度趋势、物种分布、领养统计
+  - 显示未读通知列表，支持单条/全部标记已读
+  - 管理员可看到审核相关的快捷入口
+  
+  后端数据: stats, isAdmin, chartData, notifications
+  路由: GET /dashboard
+-->
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
-import { Chart, registerables } from 'chart.js';
-Chart.register(...registerables);
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'; // 已登录用户布局
+import { Head, Link, router } from '@inertiajs/vue3';                // Inertia 组件
+import { ref, onMounted } from 'vue';                                // Vue 响应式 API
+import { Chart, registerables } from 'chart.js';                     // Chart.js 图表库
+Chart.register(...registerables); // 注册所有 Chart.js 组件
 
+/** 接收后端传递的页面属性 */
 const props = defineProps({
-    stats: Object,
-    isAdmin: Boolean,
+    stats: Object,         // 统计数据（动物数、文件数、待审核数等）
+    isAdmin: Boolean,      // 是否为管理员
     chartData: Object,
     notifications: Array,
 });
@@ -63,15 +76,16 @@ onMounted(() => {
         new Chart(barChart.value, {
             type: 'bar',
             data: {
-                labels: ['待审核', '已通过', '已驳回'],
+                labels: ['待审核', '已通过', '已驳回', '已完成'],
                 datasets: [{
                     label: '申请数',
                     data: [
                         props.chartData.adoptionStats.pending,
                         props.chartData.adoptionStats.approved,
                         props.chartData.adoptionStats.rejected,
+                        props.chartData.adoptionStats.completed,
                     ],
-                    backgroundColor: ['#f59e0b', '#10b981', '#ef4444'],
+                    backgroundColor: ['#f59e0b', '#3b82f6', '#ef4444', '#10b981'],
                     borderRadius: 6,
                 }]
             },
@@ -122,61 +136,65 @@ onMounted(() => {
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                     
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition duration-300">
+                    <Link :href="route('animals.index')" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-blue-200 transition duration-300 cursor-pointer group">
                         <div class="flex justify-between items-start">
                             <div>
-                                <p class="text-sm font-medium text-gray-500 uppercase">收容动物</p>
+                                <p class="text-sm font-medium text-gray-500 uppercase group-hover:text-blue-600 transition">收容动物</p>
                                 <h4 class="text-3xl font-bold text-gray-800 mt-2">{{ stats?.animals_count ?? 0 }}</h4>
                             </div>
-                            <div class="p-3 bg-blue-50 text-blue-500 rounded-lg">
+                            <div class="p-3 bg-blue-50 text-blue-500 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition duration-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                 </svg>
                             </div>
                         </div>
-                    </div>
+                    </Link>
 
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition duration-300">
+                    <Link :href="route('animals.index')" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-green-200 transition duration-300 cursor-pointer group">
                         <div class="flex justify-between items-start">
                             <div>
-                                <p class="text-sm font-medium text-gray-500 uppercase">档案记录</p>
+                                <p class="text-sm font-medium text-gray-500 uppercase group-hover:text-green-600 transition">档案记录</p>
                                 <h4 class="text-3xl font-bold text-gray-800 mt-2">{{ stats?.files_count ?? 0 }}</h4>
                             </div>
-                            <div class="p-3 bg-green-50 text-green-500 rounded-lg">
+                            <div class="p-3 bg-green-50 text-green-500 rounded-lg group-hover:bg-green-500 group-hover:text-white transition duration-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
                         </div>
-                    </div>
+                    </Link>
 
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition duration-300">
+                    <Link :href="route('animals.index')" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-200 transition duration-300 cursor-pointer group">
                         <div class="flex justify-between items-start">
                             <div>
-                                <p class="text-sm font-medium text-gray-500 uppercase">今日新增</p>
+                                <p class="text-sm font-medium text-gray-500 uppercase group-hover:text-purple-600 transition">今日新增</p>
                                 <h4 class="text-3xl font-bold text-gray-800 mt-2">{{ stats?.today_files ?? 0 }}</h4>
                             </div>
-                            <div class="p-3 bg-purple-50 text-purple-500 rounded-lg">
+                            <div class="p-3 bg-purple-50 text-purple-500 rounded-lg group-hover:bg-purple-500 group-hover:text-white transition duration-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                         </div>
-                    </div>
+                    </Link>
 
-                    <div v-if="isAdmin" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition duration-300 ring-2 ring-yellow-50">
+                    <Link v-if="isAdmin" :href="route('admin.adoptions.index')" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-yellow-200 transition duration-300 ring-2 ring-yellow-50 cursor-pointer group">
                         <div class="flex justify-between items-start">
                             <div>
-                                <p class="text-sm font-medium text-gray-500 uppercase">待审核</p>
-                                <h4 class="text-3xl font-bold text-yellow-600 mt-2">{{ stats?.pending_files ?? 0 }}</h4>
+                                <p class="text-sm font-medium text-gray-500 uppercase group-hover:text-yellow-600 transition">待审核</p>
+                                <h4 class="text-3xl font-bold text-yellow-600 mt-2">{{ (stats?.pending_adoptions ?? 0) + (stats?.pending_files ?? 0) }}</h4>
+                                <div class="mt-2 space-y-0.5">
+                                    <p class="text-xs text-gray-400">领养申请 <span class="font-semibold text-yellow-600">{{ stats?.pending_adoptions ?? 0 }}</span></p>
+                                    <p class="text-xs text-gray-400">档案审核 <span class="font-semibold text-yellow-600">{{ stats?.pending_files ?? 0 }}</span></p>
+                                </div>
                             </div>
-                            <div class="p-3 bg-yellow-50 text-yellow-500 rounded-lg">
+                            <div class="p-3 bg-yellow-50 text-yellow-500 rounded-lg group-hover:bg-yellow-500 group-hover:text-white transition duration-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
                             </div>
                         </div>
-                    </div>
+                    </Link>
                 </div>
 
                 <h3 class="text-lg font-bold text-gray-800 mb-5 pl-3 border-l-4 border-indigo-500 leading-none">
@@ -222,6 +240,18 @@ onMounted(() => {
                         <div>
                             <div class="font-bold text-lg text-gray-800 group-hover:text-yellow-600 transition">审核档案</div>
                             <div class="text-sm text-gray-500">有 <span class="text-red-500 font-bold">{{ stats?.pending_files ?? 0 }}</span> 份档案待处理</div>
+                        </div>
+                    </Link>
+
+                    <Link v-if="isAdmin" :href="route('admin.adoptions.index')" class="group bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:border-indigo-300 hover:shadow-lg transition duration-300 flex items-center gap-4 cursor-pointer">
+                        <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-bold text-lg text-gray-800 group-hover:text-indigo-600 transition">审核领养申请</div>
+                            <div class="text-sm text-gray-500">有 <span class="text-red-500 font-bold">{{ stats?.pending_adoptions ?? 0 }}</span> 条申请待审核</div>
                         </div>
                     </Link>
 

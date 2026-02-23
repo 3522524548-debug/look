@@ -1,3 +1,7 @@
+<!--
+    页面：重置密码
+    通过 token 与邮箱完成新密码设置。
+-->
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';

@@ -1,3 +1,7 @@
+<!--
+    组件：更新密码表单
+    包含旧密码校验与新密码确认，并在错误时自动聚焦。
+-->
 <script setup>
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';

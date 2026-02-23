@@ -1,11 +1,29 @@
+<!--
+  Welcome.vue - 系统首页/着陆页
+  
+  功能说明：
+  - 展示系统介绍和品牌信息
+  - 显示动态统计数据（动物总数、领养数量、运行天数）
+  - 提供登录/注册/进入控制面板的入口
+  - 提供“浏览可领养动物”的快捷入口
+  
+  后端数据: canLogin, canRegister, laravelVersion, phpVersion, siteStats
+  路由: GET /
+-->
 <script setup>
+/**
+ * 从 Inertia.js 导入 Head(页面标题) 和 Link(路由链接) 组件
+ */
 import { Head, Link } from '@inertiajs/vue3';
 
-defineProps({
-    canLogin: {
+/**
+ * 接收后端传递的页面属性
+ */
+const props = defineProps({
+    canLogin: {          // 是否显示登录按钮
         type: Boolean,
     },
-    canRegister: {
+    canRegister: {       // 是否显示注册按钮
         type: Boolean,
     },
     laravelVersion: {
@@ -15,6 +33,10 @@ defineProps({
     phpVersion: {
         type: String,
         required: true,
+    },
+    siteStats: {
+        type: Object,
+        default: () => ({ totalAnimals: 0, adoptedCount: 0, runningDays: 0 }),
     },
 });
 </script>
@@ -168,15 +190,15 @@ defineProps({
                     <h2 class="text-3xl font-bold mb-10 relative z-10">用行动传递温暖</h2>
                     <div class="grid grid-cols-3 gap-8 relative z-10">
                         <div>
-                            <div class="text-4xl font-extrabold">100+</div>
+                            <div class="text-4xl font-extrabold">{{ siteStats.totalAnimals }}+</div>
                             <div class="mt-2 text-indigo-200 text-sm">累计救助</div>
                         </div>
                         <div>
-                            <div class="text-4xl font-extrabold">50+</div>
+                            <div class="text-4xl font-extrabold">{{ siteStats.adoptedCount }}+</div>
                             <div class="mt-2 text-indigo-200 text-sm">成功领养</div>
                         </div>
                         <div>
-                            <div class="text-4xl font-extrabold">365</div>
+                            <div class="text-4xl font-extrabold">{{ siteStats.runningDays || 1 }}</div>
                             <div class="mt-2 text-indigo-200 text-sm">天守护</div>
                         </div>
                     </div>

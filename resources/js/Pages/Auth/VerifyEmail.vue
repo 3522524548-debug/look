@@ -1,3 +1,7 @@
+<!--
+    页面：邮箱验证提示
+    引导用户验证邮箱并支持重新发送验证邮件。
+-->
 <script setup>
 import { computed } from 'vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';

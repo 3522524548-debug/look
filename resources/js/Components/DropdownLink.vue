@@ -1,3 +1,7 @@
+<!--
+    组件：下拉菜单项链接
+    基于 Inertia Link，适用于 Dropdown 里的菜单选项。
+-->
 <script setup>
 import { Link } from '@inertiajs/vue3';
 

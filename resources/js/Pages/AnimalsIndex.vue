@@ -1,6 +1,14 @@
+<!--
+  AnimalsIndex.vue - 动物列表页（早期版本/备用）
+  
+  功能说明：
+  - 动物列表的早期实现版本，后来被 Animals/Index.vue 替代
+  - 支持基本的动物CRUD操作
+  - 包含搜索和筛选功能
+-->
 <script setup>
-import { defineProps, ref, reactive, computed } from 'vue'
-import { Link, router } from '@inertiajs/vue3' // 引入 router 用于发送请求
+import { defineProps, ref, reactive, computed } from 'vue' // Vue 响应式 API
+import { Link, router } from '@inertiajs/vue3'              // Inertia 组件（router 用于发送请求）
 
 const props = defineProps({
   animals: Object, 

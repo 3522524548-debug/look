@@ -1,8 +1,20 @@
+<!--
+  Auth/Login.vue - 用户登录页面
+  
+  功能说明：
+  - 提供邮箱+密码登录表单
+  - 支持“记住我”功能
+  - 提供“忘记密码”和“注册账号”链接
+  - 表单验证错误实时显示
+  
+  路由: GET /login
+-->
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3'
+import { Head, Link, useForm } from '@inertiajs/vue3' // Inertia 组件
 
+/** 创建登录表单 */
 const form = useForm({
-  email: '',
+  email: '',              // 邮箱
   password: '',
   remember: false,
 })

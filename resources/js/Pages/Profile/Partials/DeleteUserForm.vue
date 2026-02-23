@@ -1,3 +1,7 @@
+<!--
+    组件：删除账号确认
+    通过模态框二次确认并输入密码完成注销。
+-->
 <script setup>
 import DangerButton from '@/Components/DangerButton.vue';
 import InputError from '@/Components/InputError.vue';

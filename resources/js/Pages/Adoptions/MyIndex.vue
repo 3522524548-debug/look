@@ -1,9 +1,21 @@
+<!--
+  Adoptions/MyIndex.vue - 我的领养申请页
+  
+  功能说明：
+  - 显示当前用户提交的所有领养申请
+  - 展示申请状态：待审核/已通过/已驳回/已完成
+  - 包含动物信息、申请时间等详情
+  
+  后端数据: applications
+  路由: GET /my-adoptions
+-->
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'; // 已登录用户布局
+import { Head, Link } from '@inertiajs/vue3';                        // Inertia 组件
 
+/** 接收后端传递的申请列表 */
 defineProps({
-    applications: Array
+    applications: Array   // 用户的所有领养申请记录
 });
 </script>
 
@@ -54,7 +66,10 @@ defineProps({
                         </div>
 
                         <div class="flex flex-col items-end gap-2">
-                            <span v-if="app.status === 'approved'" class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-50 text-green-700 rounded-xl font-bold text-sm border border-green-100">
+                            <span v-if="app.status === 'completed'" class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-xl font-bold text-sm border border-indigo-100">
+                                <span class="w-2 h-2 bg-indigo-500 rounded-full"></span> 已完成交接
+                            </span>
+                            <span v-else-if="app.status === 'approved'" class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-50 text-green-700 rounded-xl font-bold text-sm border border-green-100">
                                 <span class="w-2 h-2 bg-green-500 rounded-full"></span> 审核通过
                             </span>
                             <span v-else-if="app.status === 'rejected'" class="inline-flex items-center gap-1.5 px-4 py-2 bg-red-50 text-red-700 rounded-xl font-bold text-sm border border-red-100">
@@ -64,8 +79,11 @@ defineProps({
                                 <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span> 审核中
                             </span>
                             
-                            <p v-if="app.status === 'approved'" class="text-xs text-green-600 text-right leading-relaxed">
-                                请等待工作人员联系您<br>办理后续手续
+                            <p v-if="app.status === 'completed'" class="text-xs text-indigo-600 text-right leading-relaxed">
+                                🎉 恭喜！领养交接已完成<br>请好好照顾它哦
+                            </p>
+                            <p v-else-if="app.status === 'approved'" class="text-xs text-green-600 text-right leading-relaxed">
+                                请等待工作人员联系您<br>办理交接手续
                             </p>
                         </div>
                     </div>

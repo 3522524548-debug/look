@@ -1,13 +1,23 @@
+<!--
+  UploadFile.vue - 文件上传页（独立页面）
+  
+  功能说明：
+  - 提供独立的文件上传界面
+  - 支持选择动物、文件类型、上传PDF文件、添加备注
+  - 显示上传进度和结果反馈
+  
+  路由: GET /upload (Redirect到动物列表或文件页)
+-->
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
-import { Link } from '@inertiajs/vue3'
-import axios from 'axios'
+import { reactive, ref, onMounted } from 'vue'   // Vue 响应式 API
+import { Link } from '@inertiajs/vue3'            // Inertia 路由链接组件
+import axios from 'axios'                         // HTTP 请求库
 
-// 用 reactive 管理表单
+/** 使用 reactive 创建响应式表单数据 */
 const form = reactive({
-  animal_id: '',
-  type: '检疫报告',
-  file: null,
+  animal_id: '',          // 选择的动物ID
+  type: '检疫报告',       // 文件类型
+  file: null,             // 上传的文件对象
   remark: '',
 })
 

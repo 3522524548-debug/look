@@ -1,3 +1,7 @@
+<!--
+    组件：次按钮
+    用于次要操作（取消、返回）等场景。
+-->
 <script setup>
 defineProps({
     type: {

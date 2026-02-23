@@ -1,13 +1,26 @@
+<!--
+  Animals/CareLogs.vue - 动物护理记录管理页
+  
+  功能说明：
+  - 显示某只动物的所有护理记录列表
+  - 支持新增/编辑/删除护理记录（弹窗表单）
+  - 记录内容包括：护理日期、类型、体重、体温、备注、下次复查时间
+  - 支持按护理类型筛选
+  - 权限控制：仅创建人或管理员可编辑/删除
+  
+  后端数据: animal, logs
+  路由: GET /animals/{animal}/carelogs
+-->
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3'; // 引入 Head
-import { ref, computed } from 'vue'
-import axios from 'axios'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'; // 已登录用户布局
+import { Head, Link, router } from '@inertiajs/vue3';                // Inertia 组件
+import { ref, computed } from 'vue'                                  // Vue 响应式 API
+import axios from 'axios'                                            // HTTP 请求库
 
-// 接收后端传来的动物信息和护理记录
+/** 接收后端传递的页面属性 */
 const props = defineProps({
-  animal: Object,
-  logs: Array // 注意：如果你后端分页了，这里可能需要改成 Object 并处理 logs.data
+  animal: Object,       // 动物基本信息(id, name, species)
+  logs: Array           // 护理记录列表
 })
 
 // ------------ 表单相关（新增 / 编辑） ------------
@@ -19,8 +32,16 @@ const form = ref({
   notes: '',
   weight: '',
   temperature: '',
-  next_visit_at: '',
+  next_visit_date: '',
+  next_visit_time: '09:00',
 })
+
+// 计算合并后的 next_visit_at
+const computedNextVisit = () => {
+  if (!form.value.next_visit_date) return ''
+  const time = form.value.next_visit_time || '09:00'
+  return `${form.value.next_visit_date}T${time}`
+}
 
 // 当前是否在编辑模式（null = 新增，非 null = 正在编辑的记录 ID）
 const editingId = ref(null)
@@ -37,7 +58,8 @@ const resetForm = () => {
     notes: '',
     weight: '',
     temperature: '',
-    next_visit_at: '',
+    next_visit_date: '',
+    next_visit_time: '09:00',
   }
 }
 
@@ -61,10 +83,13 @@ const startEdit = (log) => {
     notes: log.notes ?? '',
     weight: log.weight ?? '',
     temperature: log.temperature ?? '',
-    // 下次复诊时间保持原样逻辑即可
-    next_visit_at: log.next_visit_at
-      ? log.next_visit_at.replace(' ', 'T').slice(0, 16)
+    // 下次复诊时间拆分为日期和时间
+    next_visit_date: log.next_visit_at
+      ? log.next_visit_at.replace(' ', 'T').slice(0, 10)
       : '',
+    next_visit_time: log.next_visit_at
+      ? log.next_visit_at.replace(' ', 'T').slice(11, 16) || '09:00'
+      : '09:00',
   };
 };
 
@@ -79,20 +104,23 @@ const submit = async () => {
   msg.value = ''
 
   try {
-    const payload = { ...form.value }
+    const payload = { ...form.value, next_visit_at: computedNextVisit() }
+    delete payload.next_visit_date
+    delete payload.next_visit_time
 
     if (editingId.value) {
-      // ⭐ 编辑
+      // 编辑
       const url = `/carelogs/${editingId.value}?_method=PUT`
       await axios.post(url, payload)
     } else {
-      // ⭐ 新增
+      // 新增
       const url = `/animals/${props.animal.id}/carelogs`
       await axios.post(url, payload)
     }
 
-    // 成功后刷新页面
-    location.reload()
+    // 成功后使用 Inertia 刷新页面数据
+    resetForm()
+    router.reload({ preserveScroll: true })
   } catch (e) {
     console.error('提交出错:', e)
     msg.value = '提交失败，请检查表单或稍后再试'
@@ -108,10 +136,10 @@ const removeLog = async (id) => {
   try {
     const url = `/carelogs/${id}?_method=DELETE`
     await axios.post(url)
-    location.reload()
+    router.reload({ preserveScroll: true })
   } catch (e) {
     console.error('删除失败:', e)
-    alert('删除失败，请稍后再试')
+    msg.value = '删除失败，请稍后再试'
   }
 }
 
@@ -213,8 +241,14 @@ const filteredLogs = computed(() => {
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-600 mb-1.5">下次复诊时间</label>
-                            <input type="datetime-local" v-model="form.next_visit_at" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition" />
+                            <label class="block text-sm font-medium text-gray-600 mb-1.5">下次复诊时间 <span class="text-gray-400 font-normal">(可选)</span></label>
+                            <div class="flex gap-2">
+                                <input type="date" v-model="form.next_visit_date" class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition" />
+                                <input type="time" v-model="form.next_visit_time" class="w-28 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition" />
+                                <button v-if="form.next_visit_date" type="button" @click="form.next_visit_date = ''; form.next_visit_time = '09:00'" class="px-2.5 text-gray-400 hover:text-red-500 transition" title="清除">
+                                    ✕
+                                </button>
+                            </div>
                         </div>
 
                         <div class="sm:col-span-2 lg:col-span-3">

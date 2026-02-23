@@ -1,13 +1,26 @@
+<!--
+  AnimalFiles.vue - 动物文件档案管理页
+  
+  功能说明：
+  - 显示某只动物的所有文件档案（PDF）
+  - 支持上传新文件（仅PDF格式，最大5MB）
+  - 支持在线预览和下载PDF
+  - 管理员可删除文件和审核文件
+  - 显示文件状态：待审核/已通过/已驳回
+  
+  后端数据: animalId, files
+  路由: GET /animals/{animal}/files
+-->
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, useForm, usePage, router } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
-import axios from 'axios';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'; // 已登录用户布局
+import { Head, Link, useForm, usePage, router } from '@inertiajs/vue3'; // Inertia 组件
+import { ref, computed } from 'vue';                                 // Vue 响应式 API
+import axios from 'axios';                                           // HTTP 请求库
 
-// 接收后端传来的参数
+/** 接收后端传递的参数 */
 const props = defineProps({
-  animalId: Number,
-  files: Array,
+  animalId: Number,       // 当前动物的ID
+  files: Array,           // 文件档案列表
 })
 
 // ---------------------------------------------------------
